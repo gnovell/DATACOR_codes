@@ -1,0 +1,16 @@
+while read f ; do
+  linea=$f 
+  i=$(echo $linea | awk '{print $1}')
+  a=$(echo $linea | awk '{print $2}')
+  b=$(echo $linea | awk '{print $3}')
+  c=$(echo $linea | awk '{print $4}')
+  mkdir SLAB_M$i
+  cd SLAB_M$i
+  mkdir fromXTB
+  cd fromXTB
+  cp ../../XTB/PYTHON/MOL/MOL_$i/geom_out_Z"$a"_X"$b"_Y"$c".gen .
+  /opt/intel/intelpython3/bin/python3.6 ~/genTOpos.py geom_out_Z"$a"_X"$b"_Y"$c".gen > POSCAR
+  /opt/intel/intelpython3/bin/python3.6 ../../POTCARgenerator.py 
+  cd ..
+  cd ..
+done < ./makeDIR
