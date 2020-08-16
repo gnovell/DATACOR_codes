@@ -31,7 +31,6 @@ def read_file(arxiu):
             break
         elif counter > 7+lin :
             Mxyz.append(linea.split()[0:3])
- #           Mxyz.append([float(x) for x in linea.split()[0:3]])
         counter += 1
     Matriz_celda=np.array(Mcell,float)
     Matriz_XYZ=np.array(Mxyz,float)
@@ -44,11 +43,9 @@ def CenterMolecule(Mcell,Matriz_xyz):
     Vector=CentroCelda-CentroMol
     Traslacion=np.eye(4,4)
     Traslacion[3,0:-1]=Vector
-#    columna=np.zero(Tamanho)
     Matriz_xyz2=np.c_[Matriz_xyz,np.ones(Tamanho)]
     NuevasCocordenadas=np.dot(Matriz_xyz2,Traslacion)[:,0:-1]
     return(NuevasCocordenadas)
-
 
 def RotacionMolecula(Matriz_XYZ,type,ang):
     Angulo=45*pi/180*ang
@@ -63,12 +60,11 @@ def RotacionMolecula(Matriz_XYZ,type,ang):
         Rotacion[2, 2] = cos(Angulo)
         Rotacion[1, 2] = -sin(Angulo)
         Rotacion[2, 1] = sin(Angulo)
-    if type == 'X':
+    if type == 'Y':
         Rotacion[1, 1] = cos(Angulo)
         Rotacion[2, 2] = cos(Angulo)
         Rotacion[1, 2] = -sin(Angulo)
         Rotacion[2, 1] = sin(Angulo)
-
     Matriz_rotada=np.dot(Matriz_XYZ,Rotacion)
     return(Matriz_rotada)
 
@@ -84,8 +80,6 @@ def FormatoGEN(arxiu,Mcell,Mxyz,at_type,at_num):
             limiter += int(at_num[j])
             j += 1
         archivo.write('{:>4}   {}   {:>12f}   {:>12f}   {:>12f} \n'.format(i+1,j,*Mxyz[i]))
-#        archivo.writelines(str(i + 1)+'  '+str(j)+'  '.join(Mxyz[i,:]))
-    # print(New_coordinates)
     archivo.write('  0.0000000000   0.0000000000   0.0000000000 \n')
     for i in range(len(Mcell)):
         archivo.write(' {:>12f}  {:>12f}  {:>12f}  \n'.format(*Mcell[i]))
@@ -113,24 +107,12 @@ else :
 
 CoordenadasMOL=CenterMolecule(Mcellslab,Matriz_XYZ)
 
-#Matriz_coordenadas=np.concatenate((Matriz_XYZslab,CoordenadasMOL))
-#FormatoGEN(Mcellslab,Matriz_coordenadas,at_typeslab+at_type,at_numslab+at_num)
-
-#Matriz_coorRot=RotacionMolecula(CoordenadasMOL,'Z')
-#Matriz_centerRot=CenterMolecule(Mcellslab,Matriz_coorRot)
-#Matriz_coordenadas=np.concatenate((Matriz_XYZslab,Matriz_centerRot))
-#FormatoGEN('geom_rZ0.gen',Mcellslab,Matriz_coordenadas,at_typeslab+at_type,at_numslab+at_num)
-
 for i in range(7):
     Matriz_coorRot = RotacionMolecula(CoordenadasMOL,'Z',i)
     Matriz_centerRot = CenterMolecule(Mcellslab, Matriz_coorRot)
-#    Matriz_coordenadas = np.concatenate((Matriz_XYZslab, Matriz_centerRot))
-#    FormatoGEN('geom_rZ'+str(i)+'.gen', Mcellslab, Matriz_coordenadas, at_typeslab + at_type, at_numslab + at_num)
     for j in range(7):
         Matriz_coorRot = RotacionMolecula(Matriz_centerRot, 'X',j)
         Matriz_centerRot = CenterMolecule(Mcellslab, Matriz_coorRot)
-#        Matriz_coordenadas = np.concatenate((Matriz_XYZslab, Matriz_centerRot))
-#        FormatoGEN('geom_rZ'+str(i)+'_X'+str(j)+'.gen', Mcellslab, Matriz_coordenadas, at_typeslab + at_type, at_numslab + at_num)
         for k in range(7):
             Matriz_coorRot = RotacionMolecula(Matriz_centerRot, 'Y',k)
             Matriz_centerRot = CenterMolecule(Mcellslab, Matriz_coorRot)
