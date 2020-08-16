@@ -10,8 +10,6 @@ def vasp_file(arxiu):
         if counter == 5:
             at_type = (linea.split())
         counter += 1
-#        Mxyz = np.array(Mxyz,float)
-#        Mcell = np.array(Mcell,float)
     return(at_type)
 
 ##########################
@@ -29,5 +27,4 @@ for i in range(len(at_type)):
     linea = linea+dirPOTCAR+at_type[i]+'.pot  '
 linea = linea+'  > POTCAR'
 
-#print(linea)
 os.system(linea)
